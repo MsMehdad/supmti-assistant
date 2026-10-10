@@ -1,0 +1,29 @@
+# Lance la base de données PostgreSQL du projet :
+#   docker compose up -d      (démarrer)
+#   docker compose ps         (vérifier l'état)
+#   docker compose down       (arrêter ; les données sont conservées)
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: supmti-db
+    restart: unless-stopped
+    mem_limit: 512m
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # 127.0.0.1 : la base n'est accessible que depuis ton PC, pas depuis le réseau
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      # les données survivent à l'arrêt ou à la suppression du conteneur
+      - supmti_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  supmti_pgdata:
