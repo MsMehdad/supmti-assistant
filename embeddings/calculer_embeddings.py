@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 ÉTAPE 4 — CHUNKS ET EMBEDDINGS : partie « calcul »
